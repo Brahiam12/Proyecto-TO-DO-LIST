@@ -50,16 +50,13 @@
 <pre><code>
 project/
 ├── app.py        # Código principal de la aplicación
-├── static/       # Archivos CSS, JS e imágenes
-│   ├── style.css
-├── templates/    # Archivos HTML
+├── templates/    # Archivos HTML y CSS
 │   ├── index.html
 └── tareas.json    # Almacenamiento de datos en formato JSON
 </code></pre>
 
 <ul>
   <li><strong>app.py</strong>: Archivo principal que contiene la lógica de la aplicación Flask.</li>
-  <li><strong>static/style.css</strong>: Estilos para la interfaz de usuario.</li>
   <li><strong>templates/index.html</strong>: Plantilla HTML que muestra la lista de tareas y permite la interacción.</li>
   <li><strong>tasks.json</strong>: Archivo que guarda las tareas en formato JSON.</li>
 </ul>
@@ -74,8 +71,3 @@ project/
   <li><strong>POST /import</strong>: Importa tareas desde un archivo JSON.</li>
 </ul>
 
-<h2>Contribuciones</h2>
-<p>Si deseas contribuir a este proyecto, puedes hacer un fork del repositorio y enviar un pull request. Asegúrate de seguir las mejores prácticas de codificación y de añadir pruebas cuando sea necesario.</p>
-
-<h2>Licencia</h2>
-<p>Este proyecto está bajo la licencia MIT. Para más detalles, consulta el archivo <a href="LICENSE">LICENSE</a>.</p>
