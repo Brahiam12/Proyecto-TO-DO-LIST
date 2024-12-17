@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Tareas</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: #ffffff;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center  ;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-agregar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .form-agregar input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-agregar button {
+            background: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .form-agregar button:hover {
+            background: #218838;
+        }
+
+        .tareas {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tarea.completada {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .tarea .texto {
+            text-decoration: none;
+        }
+
+        .tarea.completada .texto {
+            text-decoration: line-through;
+        }
+
+        .acciones a {
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            margin-left: 5px;
+            font-size: 14px;
+        }
+
+        .acciones a.completar {
+            background: #007bff;
+            color: #fff;
+        }
+
+        .acciones a.eliminar {
+            background: #dc3545;
+            color: #fff;
+        }
+
+        .acciones a:hover {
+            opacity: 0.8;
+        }
+
+        .estado {
+            font-size: 14px;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        .estado.pendiente {
+            background: #ffc107;
+            color: #856404;
+        }
+
+        .estado.completada {
+            background: #28a745;
+            color: #fff;
+        }
+
+        .form-json {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-json button {
+            background: #17a2b8;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .form-json button:hover {
+            background: #138496;
+        }
+        .tarea .texto, .tarea span {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal; 
+            max-width: 100%; 
+            display: inline-block;
+        }
+
+        .tarea {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start; 
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            background: #f9f9f9;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .acciones {
+            flex-shrink: 0; 
+            display: flex;
+            gap: 5px; 
+        }
+        footer {
+        position: fixed;
+        bottom: 10px; 
+        left: 50%;
+        transform: translateX(-50%);
+        color: #ffffff;
+        font-size: 1rem;
+        background-color: rgba(0, 0, 0, 0.3); 
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestor de Tareas</h1>
+
+        <!-- Formulario para agregar una nueva tarea -->
+        <form action="/agregar" method="POST" class="form-agregar">
+            <input type="text" name="titulo" placeholder="Título" required>
+            <input type="text" name="descripcion" placeholder="Descripción">
+            <button type="submit">Agregar Tarea</button>
+        </form>
+
+        <!-- Formulario para importar/exportar JSON -->
+        <form action="/importar" method="POST" enctype="multipart/form-data" class="form-json">
+            <h2 for="archivo-json">Importar tareas desde JSON:</h2>
+            <input type="file" name="archivo-json" id="archivo-json" accept="application/json" required>
+            <button type="submit">Importar Tareas</button>
+        </form>
+
+        <form action="/exportar" method="GET" class="form-json">
+            <button type="submit">Exportar Tareas a JSON</button>
+        </form>
+
+        <!-- Lista de tareas -->
+        <h2>Lista de Tareas</h2>
+        <ul class="tareas">
+            {% for tarea in tareas %}
+            <li class="tarea {{ 'completada' if tarea.estado else '' }}">
+                <div>
+                    <strong class="texto">{{ tarea.titulo }}</strong><br>
+                    <span>{{ tarea.descripcion or 'Sin descripción' }}</span><br>
+                    <span class="estado {{ 'completada' if tarea.estado else 'pendiente' }}">
+                        {{ 'Completada' if tarea.estado else 'Pendiente' }}
+                    </span>
+                </div>
+                <div class="acciones">
+                    {% if not tarea.estado %}
+                    <a href="/completar/{{ tarea.id }}" class="completar">Completar</a>
+                    {% endif %}
+                    <a href="/eliminar/{{ tarea.id }}" class="eliminar">Eliminar</a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <footer>Brahiam Fernando Merchan Serrano</footer>
+</body>
+</html>
